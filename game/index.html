@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Таємниця лісового маяка — повна гра</title>
+<style>
+:root{--bg:#0b1b14;--panel:#173629;--gold:#f2d58a;--ink:#f4f0dc;--muted:#c3d0b8}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#315b43,#0b1b14 75%);color:var(--ink);font-family:system-ui,Arial,sans-serif}.wrap{max-width:1080px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.brand{font-size:clamp(22px,4vw,34px);font-weight:800;color:var(--gold)}.muted{color:var(--muted);font-size:13px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px;margin-top:15px}.panel{background:linear-gradient(145deg,#1c4030,#10271d);border:1px solid #718c68;border-radius:17px;box-shadow:0 15px 40px #0005}.game{padding:13px}.side{padding:17px}.scene{display:flex;justify-content:space-between;gap:8px;margin-bottom:10px}.scene h2{font-size:19px;color:var(--gold);margin:0}.map{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;aspect-ratio:12/8;background:#091710;padding:6px;border-radius:12px}.tile{display:grid;place-items:center;min-width:0;border-radius:6px;background:#31553a;font-size:clamp(12px,2vw,23px)}.tree{background:#163b29}.rock{background:#46534a}.landmark{background:#735d39;box-shadow:inset 0 0 0 2px #d9c17c}.player{background:#f0d99b;color:#183326;outline:2px solid white}.hint{margin-top:10px;padding:11px;background:#0c2118;border-left:3px solid var(--gold);border-radius:9px;min-height:45px;line-height:1.45}.side h3{margin:0 0 12px;color:var(--gold)}.side p{font-size:14px;color:var(--muted);line-height:1.5}.goal{background:#0c2118;border-radius:10px;padding:11px;margin:9px 0}.seals{display:flex;gap:7px}.seal{flex:1;text-align:center;padding:9px 3px;background:#0c2118;border:1px solid #54735b;border-radius:9px;color:#91a392;font-size:12px}.seal.on{color:var(--gold);border-color:var(--gold);background:#3b3824}.controls{display:grid;grid-template-columns:repeat(3,45px);gap:5px;justify-content:center;margin:10px auto}.controls button,.btn{border:1px solid #82966d;background:#e8ebd6;color:#172c21;border-radius:9px;padding:10px;font-weight:700}.controls button{height:42px}.empty{visibility:hidden}.btn{width:100%;margin-top:7px;background:var(--gold)}.footer{text-align:center;color:#aabca9;font-size:12px;margin:13px}.overlay{position:fixed;inset:0;background:#020a07df;display:grid;place-items:center;padding:16px;z-index:5}.modal{width:min(600px,100%);padding:25px;background:linear-gradient(145deg,#244a35,#10251b);border:1px solid #b2b77e;border-radius:19px;text-align:center;box-shadow:0 25px 80px #0009}.modal h1,.modal h2{color:var(--gold);margin-top:0}.modal p{line-height:1.6}.modal button{border:0;border-radius:9px;padding:12px 20px;margin:5px;background:var(--gold);color:#182c20;font-weight:800}.choices{display:grid;gap:8px;margin:16px 0}.choices button{text-align:left;background:#e8ebd6}.hidden{display:none!important}@media(max-width:780px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:8px}.side h3{grid-column:1/-1}.map{gap:3px}}@media(max-width:480px){.wrap{padding:9px}.game{padding:7px}.map{gap:2px;padding:4px}.tile{border-radius:4px}.side{display:block}}
+</style></head><body><div class="wrap">
+<header class="top"><div><div class="brand">✦ Таємниця лісового маяка</div><div class="muted">Пригодницька гра · дослідження · загадки</div></div><div class="muted">WASD / стрілки — рух · E — взаємодія</div></header>
+<div class="layout"><main class="panel game"><div class="scene"><h2 id="zone">Зачарований ліс</h2><span class="muted" id="coords">1, 1</span></div><div id="map" class="map" aria-label="Ігрова мапа"></div><div class="hint" id="message" aria-live="polite">Знайди три печатки, щоб відновити світло маяка.</div></main>
+<aside class="panel side"><h3>Щоденник мандрівника</h3><div class="goal"><b>Мета пригоди</b><p id="goal">Знайди три печатки та дістанься старого маяка.</p></div><div><b>Печатки</b><div class="seals"><div class="seal" id="s0">🍃<br>Ліс</div><div class="seal" id="s1">💧<br>Вода</div><div class="seal" id="s2">⭐<br>Зоря</div></div></div><div><b>Підказка</b><p id="clue">Шукай особливі символи на мапі. Підійди до них і натисни E.</p></div><div><b>Керування</b><div class="controls"><button class="empty">·</button><button data-m="0,-1">▲</button><button class="empty">·</button><button data-m="-1,0">◀</button><button data-m="0,1">▼</button><button data-m="1,0">▶</button></div><button class="btn" id="interact">Взаємодіяти (E)</button><button class="btn" id="restart" style="background:#d9e1cf">Почати спочатку</button><p class="muted">На телефоні користуйся стрілками.</p></div></aside></div><div class="footer">Навчальний проєкт · версія 1.0</div></div>
+<div class="overlay" id="start"><div class="modal"><h1>✦ Таємниця лісового маяка</h1><p>Колись маяк освітлював шлях мандрівникам. Тепер його світло згасло, а стародавні печатки приховані в лісі.</p><p>Досліди місцевість, розв'яжи три загадки та віднови світло маяка.</p><p><b>Керування:</b> WASD або стрілки — рух, E — взаємодія. На телефоні — екранні стрілки.</p><button id="startBtn">Почати пригоду</button></div></div>
+<div class="overlay hidden" id="puzzle"><div class="modal"><h2 id="ptitle">Загадка</h2><p id="ptext"></p><div class="choices" id="choices"></div><button id="close">Повернутися до лісу</button></div></div>
+<div class="overlay hidden" id="ending"><div class="modal"><h1>✦ Маяк знову світить!</h1><p>Три печатки з'єдналися. Над лісом розлилося тепле світло, а стежка додому знову відкрита.</p><p><b>Пригоду завершено!</b></p><button id="again">Зіграти ще раз</button></div></div>
+<script>
+(()=>{
+const W=12,H=8,terrain=["############","#....T.....#","#..##...T..#","#......#...#","#.T....#...#","#....T.....#","#..........#","############"];
+const places=[
+{id:"grove",x:2,y:1,icon:"🍃",name:"Галявина шепоту",seal:0,q:"Дух лісу питає: як називається процес, завдяки якому рослини використовують сонячне світло для створення поживних речовин?",a:["Фотосинтез","Випаровування","Звукова хвиля"],ok:0,success:"Листя засяяло зеленим світлом. Ти отримав Лісову печатку!",clue:"Згадай, як рослини використовують сонячне світло."},
+{id:"pond",x:9,y:2,icon:"💧",name:"Тихе озеро",seal:1,q:"Водяна хранителька питає: у якому стані вода перетворюється на лід?",a:["Газоподібному","Рідкому","Плазмовому"],ok:1,success:"Озеро засяяло блакиттю. Ти отримав Водяну печатку!",clue:"Подумай про воду, яку охолодили до точки замерзання."},
+{id:"ruins",x:3,y:6,icon:"⭐",name:"Старі руїни",seal:2,q:"Зоряний камінь питає: скільки променів має класична п'ятикутна зірка?",a:["Чотири","П'ять","Шість"],ok:1,success:"Зоряний камінь спалахнув. Ти отримав Зоряну печатку!",clue:"Порахуй вершини п'ятикутної зірки."},
+{id:"tower",x:10,y:6,icon:"🏰",name:"Старий маяк",final:true}
+];
+let pos={x:1,y:1},seals=[false,false,false],solved={},active=null,won=false;
+const $=id=>document.getElementById(id),map=$("map"),msg=$("message");
+function adjacent(p){return Math.abs(pos.x-p.x)+Math.abs(pos.y-p.y)<=1}
+function render(){
+ map.innerHTML="";
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+  const c=terrain[y][x],p=places.find(v=>v.x===x&&v.y===y),d=document.createElement("div");
+  d.className="tile "+(c==="#"?"tree":c==="T"?"rock":"floor");d.textContent=c==="#"?"🌲":c==="T"?"🪨":"·";
+  if(p){d.className="tile landmark";d.textContent=p.final?(seals.every(Boolean)?"🏰":"🔒"):(solved[p.id]?"✨":p.icon)}
+  if(pos.x===x&&pos.y===y){d.className="tile player";d.textContent="🧭"}map.appendChild(d);
+ }
+ $("coords").textContent="Мандрівник: "+pos.x+", "+pos.y;
+ seals.forEach((v,i)=>$("s"+i).classList.toggle("on",v));
+ $("goal").textContent=seals.every(Boolean)?"Усі печатки зібрано! Знайди маяк.":"Зібрано печаток: "+seals.filter(Boolean).length+"/3.";
+ $("clue").textContent=seals.every(Boolean)?"Підійди до маяка та натисни E.":"Шукай 🍃, 💧 та ⭐. Підійди до символу й натисни E.";
+ const near=places.find(adjacent);$("zone").textContent=near?near.name:"Зачарований ліс";
+}
+function say(t){msg.textContent=t}
+function move(dx,dy){
+ if(won||!$("puzzle").classList.contains("hidden"))return;
+ const x=pos.x+dx,y=pos.y+dy;if(!terrain[y]||terrain[y][x]==="#"||terrain[y][x]==="T")return;
+ pos={x,y};render();const p=places.find(adjacent);
+ say(p?(p.final?"Перед тобою старий маяк. Натисни E.":solved[p.id]?"Ти вже знайшов тут печатку.":"Ти відчуваєш давню магію. Натисни E, щоб дослідити місце."):"Ти йдеш лісовою стежкою. Шукай особливі символи.");
+}
+function interact(){
+ if(won)return;const p=places.find(adjacent);
+ if(!p){say("Поруч немає місця для взаємодії. Підійди до особливого символу.");return}
+ if(p.final){if(!seals.every(Boolean)){say("Маяк зачинений. Знайди всі три печатки.");return}won=true;$("ending").classList.remove("hidden");return}
+ if(solved[p.id]){say("Цю загадку вже розгадано. Печатка у тебе!");return}
+ active=p;$("ptitle").textContent=p.name;$("ptext").textContent=p.q;const box=$("choices");box.innerHTML="";
+ p.a.forEach((answer,i)=>{const b=document.createElement("button");b.textContent=answer;b.onclick=()=>choose(i);box.appendChild(b)});
+ $("puzzle").classList.remove("hidden");
+}
+function choose(i){
+ if(!active)return;const p=active;
+ if(i===p.ok){solved[p.id]=true;seals[p.seal]=true;$("puzzle").classList.add("hidden");active=null;say(p.success);render()}
+ else{$("ptext").textContent="Це не та відповідь. Підказка: "+p.clue+" Спробуй ще раз."}
+}
+function reset(){pos={x:1,y:1};seals=[false,false,false];solved={};active=null;won=false;$("ending").classList.add("hidden");$("puzzle").classList.add("hidden");say("Ти прокинувся біля старої стежки. Знайди три печатки, щоб відновити світло маяка.");render()}
+$("startBtn").onclick=()=>$("start").classList.add("hidden");
+$("interact").onclick=interact;$("restart").onclick=()=>{reset();$("start").classList.remove("hidden")};
+$("close").onclick=()=>{$("puzzle").classList.add("hidden");active=null};
+$("again").onclick=reset;
+document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>move(...b.dataset.m.split(",").map(Number)));
+document.addEventListener("keydown",e=>{
+ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
+ if(e.key==="ArrowUp"||e.key.toLowerCase()==="w")move(0,-1);
+ if(e.key==="ArrowDown"||e.key.toLowerCase()==="s")move(0,1);
+ if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")move(-1,0);
+ if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")move(1,0);
+ if(e.key.toLowerCase()==="e"||e.key==="Enter")interact();
+ if(e.key==="Escape"&&!$("puzzle").classList.contains("hidden")){$("puzzle").classList.add("hidden");active=null}
+});
+render();
+})();
+</script></body></html>
